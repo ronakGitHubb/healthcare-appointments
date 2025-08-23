@@ -14,6 +14,11 @@ class AppointmentController extends Controller
 {
     protected $appointmentService;
 
+    /**
+     * AppointmentController constructor.
+     *
+     * @param  AppointmentService  $appointmentService  Injected service for handling appointment logic
+     */
     public function __construct(AppointmentService $appointmentService)
     {
         $this->appointmentService = $appointmentService;
@@ -30,6 +35,12 @@ class AppointmentController extends Controller
         return response()->json(['status' => true, 'message' => "Healthcare Professionals List", 'result' => $professionals]);
     }
 
+    /**
+     * Book an appointment for the authenticated user.
+     *
+     * @param  \App\Http\Requests\BookAppointmentRequest  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function book(BookAppointmentRequest $request)
     {
         try {
@@ -56,5 +67,32 @@ class AppointmentController extends Controller
                 'message' => $e->getMessage() ?? 'Something went wrong'
             ], 500);
         }
+    }
+
+    /**
+     * Cancel a user's appointment.
+     *
+     * @param  int  $id  The ID of the appointment to cancel
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function cancel($id)
+    {
+        $response = $this->appointmentService->cancelAppointment($id, auth()->id());
+
+        return response()->json([
+            'status' => $response['status'],
+            'message' => $response['message']
+        ], $response['code']);
+    }
+
+    /**
+     * Get all appointments for the currently authenticated user.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function myAppointments()
+    {
+        $appointments = auth()->user()->appointments()->with('healthcareProfessional')->get();
+        return response()->json(['status' => true, 'message' => "Appointment List", 'result' => $appointments]);
     }
 }
