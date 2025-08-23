@@ -11,6 +11,8 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:api')->group(function () {
     Route::get('/professionals', [AppointmentController::class, 'professionals']);
     Route::post('/appointments', [AppointmentController::class, 'book']);
+    Route::get('/appointments', [AppointmentController::class, 'myAppointments']);
+    Route::delete('/appointments/{id}', [AppointmentController::class, 'cancel']);
 });
 
 Route::get('/user', function (Request $request) {
