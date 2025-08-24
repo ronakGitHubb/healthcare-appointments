@@ -4,10 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use DateTimeInterface;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+
 
 class HealthcareProfessional extends Model
 {
-    protected $fillable = ['name', 'specialty'];
+    use HasFactory;
+
+    protected $fillable = ['name', 'specialty','start_time','end_time'];
 
     public function appointments()
     {
