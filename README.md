@@ -1,64 +1,128 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Healthcare Appointments API (Laravel 12 + Passport + Docker)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A RESTful API built with **Laravel 12** that allows users to **book, view, and cancel healthcare appointments**.  
+The app is fully containerized with **Docker** for easy setup and portability.  
 
-# healthcare-appointments
-Aecor Practical Test
+---
 
-## About Laravel
+## 🚀 Features
+- User Registration & Login (with Laravel Passport authentication)
+- List all Healthcare Professionals
+- Book Appointments (with availability & double-booking checks)
+- View Appointments (per user)
+- Cancel Appointments (not allowed within 24 hours of start time)
+- (Optional) Mark Appointment as Completed
+- MySQL Database with Seeder
+- Dockerized (PHP-FPM, MySQL, Nginx)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🛠️ Tech Stack
+- PHP 8.2 (Laravel 12)
+- MySQL 5.7
+- Nginx
+- Laravel Passport (OAuth2 authentication)
+- Docker & Docker Compose
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## 📂 Project Structure
+app/ # Laravel app code
+database/ # Migrations & seeders
+docker-compose.yml # Docker services
+Dockerfile # PHP-FPM container
+nginx/conf.d/ # Nginx configs
+.env.docker # Env file for Docker
+README.md # Project docs
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## ⚡ Quick Start (with Docker)
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 
+1️⃣ Clone the repository
+```bash
+git clone https://github.com/ronakGitHubb/healthcare-appointments.git
+cd healthcare-appointments
 
-### Premium Partners
+2️⃣ Setup environment
+cp .env.docker .env
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+3️⃣ Build & start containers
+docker-compose up -d --build
 
-## Contributing
+4️⃣ Install dependencies
+docker exec -it healthcare-app composer install
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+5️⃣ Generate app key
+docker exec -it healthcare-app php artisan key:generate
 
-## Code of Conduct
+6️⃣ Run migrations + seeders
+docker exec -it healthcare-app php artisan migrate --seed
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+7️⃣ Install Passport
+docker exec -it healthcare-app php artisan passport:install
 
-## Security Vulnerabilities
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Your API is now running at:
+👉 http://localhost:8000
 
-## License
+🔑 Authentication (Laravel Passport)
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project uses Laravel Passport for token-based authentication.
+
+After registration or login, you’ll receive an access_token.
+
+Add it to Postman under Authorization → Bearer Token for secured requests.
+
+📡 API Endpoints
+User Registration
+POST /api/register
+Content-Type: application/json
+
+{
+  "name": "John Doe",
+  "email": "john@example.com",
+  "password": "secret"
+}
+
+User Login
+POST /api/login
+Content-Type: application/json
+
+{
+  "email": "john@example.com",
+  "password": "secret"
+}
+
+List Healthcare Professionals
+GET /api/professionals
+Authorization: Bearer <access_token>
+
+Book Appointment
+POST /api/appointments
+Authorization: Bearer <access_token>
+Content-Type: application/json
+
+{
+  "healthcare_professional_id": 1,
+  "appointment_start_time": "2025-08-25 14:00:00",
+  "appointment_end_time": "2025-08-25 15:00:00"
+}
+
+View User Appointments
+GET /api/appointments
+Authorization: Bearer <access_token>
+
+Cancel Appointment
+DELETE /api/appointments/{id}
+Authorization: Bearer <access_token>
+
+Mark Appointment as Completed (optional)
+PATCH /api/appointments/{id}/complete
+Authorization: Bearer <access_token>
+
+🧪 Running Tests (optional)
+docker exec -it healthcare-app php artisan test
