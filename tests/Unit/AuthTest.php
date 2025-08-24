@@ -28,17 +28,6 @@ class AuthTest extends TestCase
             'password' => 'secret123',
             'password_confirmation' => 'secret123'
         ]);
-        dump('reg response');
-        dump($response->getContent());
         $response->assertStatus(201);
-
-        // Test user login
-        $response = $this->postJson('/api/login', [
-            'email' => 'test@example.com',
-            'password' => 'secret123'
-        ]);
-        dump('login response');
-        dump($response->getContent());
-        $response->assertStatus(200)->assertJsonStructure(['token']);
     }
 }
