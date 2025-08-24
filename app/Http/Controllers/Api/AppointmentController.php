@@ -95,4 +95,31 @@ class AppointmentController extends Controller
         $appointments = auth()->user()->appointments()->with('healthcareProfessional')->get();
         return response()->json(['status' => true, 'message' => "Appointment List", 'result' => $appointments]);
     }
+
+    /**
+     * Mark an appointment as completed.
+     *
+     * @param int $id The ID of the appointment to mark as complete
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function complete($id)
+    {
+        try {
+            // Assume only a healthcare professional can complete an appointment
+            $user = auth()->user();
+
+            $response = $this->appointmentService->completeAppointment($id, $user->id);
+
+            return response()->json([
+                'status' => $response['status'],
+                'message' => $response['message']
+            ], $response['code']);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong.'
+            ], 500);
+        }
+    }
 }

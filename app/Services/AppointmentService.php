@@ -127,4 +127,38 @@ class AppointmentService
             ];
         }
     }
+
+    /**
+     * Mark a specific appointment as completed.
+     *
+     * @param int $appointmentId The ID of the appointment
+     * @param int $professionalId The ID of the professional completing the appointment
+     * @return array
+     */
+    public function completeAppointment($appointmentId, $userId)
+    {
+        $appointment = Appointment::find($appointmentId);
+
+        if (!$appointment) {
+            return ['status' => false, 'message' => 'Appointment not found.', 'code' => 404];
+        }
+
+        // Ensure the appointment belongs to the professional
+        if ($appointment->user_id !== $userId) {
+            return ['status' => false, 'message' => 'Unauthorized to complete this appointment.', 'code' => 403];
+        }
+
+        // Ensure the appointment is not already completed or cancelled
+        if ($appointment->status === 'completed' || $appointment->status === 'cancelled') {
+            return ['status' => false, 'message' => 'Appointment is already completed or cancelled.', 'code' => 409];
+        }
+
+        // Update the status and completed_at timestamp
+        $appointment->status = 'completed';
+        $appointment->completed_at = Carbon::now();
+        $appointment->save();
+
+        return ['status' => true, 'message' => 'Appointment marked as completed.', 'code' => 200];
+    }
+
 }
