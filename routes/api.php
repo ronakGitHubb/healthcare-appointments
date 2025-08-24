@@ -13,6 +13,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/appointments', [AppointmentController::class, 'book']);
     Route::get('/appointments', [AppointmentController::class, 'myAppointments']);
     Route::delete('/appointments/{id}', [AppointmentController::class, 'cancel']);
+    Route::put('/appointments/{id}/complete', [AppointmentController::class, 'complete']);
 });
 
 Route::get('/user', function (Request $request) {
