@@ -85,7 +85,8 @@ Content-Type: application/json
 {
   "name": "John Doe",
   "email": "john@example.com",
-  "password": "secret"
+  "password": "secret",
+  "password_confirmation": "secret"
 }
 
 User Login
@@ -121,7 +122,7 @@ DELETE /api/appointments/{id}
 Authorization: Bearer <access_token>
 
 Mark Appointment as Completed (optional)
-PATCH /api/appointments/{id}/complete
+PUT /api/appointments/{id}/complete
 Authorization: Bearer <access_token>
 
 🧪 Running Tests (optional)
